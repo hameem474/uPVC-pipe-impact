@@ -1,0 +1,6 @@
+pressure_kpa,max_force_N,permanent_deformation_mm,source
+689.48,3527.20,15.1,ABAQUS_FEA_thesis_table4.3
+1034.21,3776.05,12.3,ABAQUS_FEA_thesis_table4.3
+1378.95,4004.31,10.9,ABAQUS_FEA_thesis_table4.3
+1723.69,4138.00,9.7,ABAQUS_FEA_thesis_table4.3
+2068.43,4174.00,7.0,ABAQUS_FEA_thesis_table4.3
