@@ -92,6 +92,14 @@ def calibrate():
         print(f"{p:>10.2f} {pf:>11.1f} {rf:>11.1f} {ferr:>6.1f}%   "
               f"{pd_mm:>10.2f} {rd:>10.2f} {derr:>6.1f}%")
 
+    # Save calibrated parameters so other scripts (dataset generation, app)
+    # don't need to re-run this optimization every time.
+    import json
+    calib_dict = {"K0": K0, "beta": beta, "Fy0": Fy0, "gamma": gamma}
+    with open("data/calibrated_params.json", "w") as f:
+        json.dump(calib_dict, f, indent=2)
+    print(f"\nSaved calibrated parameters to data/calibrated_params.json")
+
     return calibrated_params
 
 
