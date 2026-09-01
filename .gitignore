@@ -24,3 +24,7 @@ data/generated_dataset_large.csv
 
 # Streamlit
 .streamlit/
+
+# Trained model binaries -- large, fully reproducible by running
+# models/train_models.py, so we don't version-control them directly.
+models/*.joblib
