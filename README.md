@@ -17,7 +17,7 @@ My undergraduate thesis used **ABAQUS finite element analysis** and physical dro
 
 I built a **reduced-order physics simulator** in Python (a pressure-dependent elastoplastic impact oscillator), **calibrated it against my thesis's real experimental/FEA data**, used it to generate a larger parametric dataset, and trained **Random Forest and XGBoost models** as fast surrogate predictors — all wrapped in an interactive Streamlit demo.
 
-## Why this isn't "just another ML side-project"
+## Approach & Rigor
 
 This project grew out of a genuine research progression, not a single leap:
 
