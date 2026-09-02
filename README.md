@@ -25,9 +25,17 @@ This project grew out of a genuine research progression, not a single leap:
 2. **Exploratory regression (preliminary, `notebooks/00_exploratory_regression.py`):** simple linear vs. quadratic curve fits directly on the thesis's 5 data points, asking "is the pressure-response relationship linear or curved?" Found quadratic fits peak force far better (R²=0.998 vs 0.932) — an early sign of the saturation behavior near burst pressure that the thesis itself describes qualitatively. That analysis's own conclusion called for "a genuinely predictive surrogate model... a multi-feature regression or tree-based model... running additional simulations across pressure, velocity, and mass" — exactly what this repo builds.
 3. **This repo:** a physics-informed simulator (replacing the need for more ABAQUS runs), calibrated against the same 5 real points, generating a full parametric dataset, feeding Random Forest / XGBoost surrogate models.
 
-Every claim in this repo traces back to a real, physically grounded source:
+Every claim in this repo traces back to a real, physically grounded source — and it's important to be precise about **which kind** of "real" each number is, since the thesis produced two distinct types:
+
+| Data type | Quantity | Source | Used for |
+|---|---|---|---|
+| **True physical experiment** | Plastic deformation **area** (mm²), measured by ruler on the pipe surface | Thesis Table 4.2 (`data/real_experimental_data.csv`) | Independent sanity check (see limitation below) |
+| **ABAQUS FEA (numerical)** | Peak contact force (N), permanent deformation **depth** (mm) | Thesis Table 4.3 (`data/real_thesis_data.csv`) | Simulator calibration & primary validation |
+
+The thesis never physically measured contact force or deformation *depth* directly — only ABAQUS computed those. So this repo's simulator is honestly a surrogate for **the thesis's FEA model**, calibrated and validated against Table 4.3, not a direct surrogate for the raw lab experiment. The lab experiment's own deformation measurement (plastic *area*, not depth) is a genuinely interesting independent data point — noted below as a real limitation, since this repo's 1-DOF model has no spatial/width dimension and can't currently predict area.
+
 - The simulator's structure (elastoplastic spring, pressure-stiffening) is derived from documented impact mechanics and the "string action" mechanism described in the source thesis.
-- The simulator's free parameters are **calibrated by least-squares fit against 5 real experimental/FEA data points** — not guessed.
+- The simulator's free parameters are **calibrated by least-squares fit against 5 real FEA data points** — not guessed.
 - Every result is validated against real thesis data the models never trained on, with errors reported honestly (2–16% typical, comparable to the thesis's own experimental-vs-FEA error of 16.93%).
 - Known limitations are documented, not hidden (see below).
 
@@ -61,6 +69,8 @@ Every claim in this repo traces back to a real, physically grounded source:
 ## Known limitations (read before citing this work)
 
 - **Not a replacement for 3D FEA.** This is a reduced-order (1-DOF) approximation. It captures trends and orders of magnitude, not detailed stress/strain fields.
+- **Calibrated against FEA, not raw physical measurements.** The simulator's force and deformation-depth targets (Table 4.3) came from ABAQUS, not directly from the physical drop-hammer rig — see "Approach & Rigor" above.
+- **Cannot predict plastic zone area, only depth.** The thesis's true physical experiment measured deformation as an *area* (mm², increasing with pressure: 95→314 mm²) — a different, opposite-trending quantity from the FEA-derived *depth* (mm, decreasing with pressure: 15.1→7.0 mm) this simulator predicts. This is a real, physically interesting effect (higher pressure limits penetration depth but spreads damage over a wider area) that a 1-DOF point model structurally cannot capture. A 2D/3D spatial model would be needed to predict area.
 - **High-pressure overshoot.** The model assumes a linear pressure-yield relationship; real data shows this saturating near the pipe's burst pressure (thesis Fig. 4.16b). Error grows to ~15-22% above ~1700 kPa.
 - **Fixed geometry.** Calibration is specific to the thesis's tested pipe (48.1mm OD, 2.75mm wall). Velocity and mass are swept because they're initial conditions, not calibrated constants — diameter/thickness are not swept, since doing so would require new calibration data.
 - **R² = 1.0000 on the force test set** looks unusually perfect — this is expected for a smooth deterministic simulator (not noisy real-world sensor data), not a data leakage bug. Flagged here explicitly for transparency.
