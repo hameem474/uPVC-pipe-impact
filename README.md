@@ -11,7 +11,7 @@
 
 ---
 
-## The 30-second summary
+## Summary
 
 My undergraduate thesis used **ABAQUS finite element analysis** and physical drop-hammer experiments to study how internal pressure affects a pipe's response to low-velocity impact — contact force, permanent deformation, pressure-pulse behavior. This project asks a follow-up question: **can a lightweight, open-source machine learning model learn to predict that same behavior, without needing commercial FEA software?**
 
